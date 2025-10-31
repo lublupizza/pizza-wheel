@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎡 Рулетка</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+        
+        .wheel {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #FF6B6B 0deg 72deg,
+                #FFD93D 72deg 144deg,
+                #6BCB77 144deg 216deg,
+                #4D96FF 216deg 288deg,
+                #A066E8 288deg 360deg
+            );
+            margin: 30px auto;
+            position: relative;
+            transition: transform 4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .wheel::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #ff6b6b;
+            z-index: 10;
+        }
+        
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,107,107,0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .info {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .result {
+            display: none;
+            background: #fff8e6;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+        
+        .result.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎡 Крутить рулетку</h1>
+        
+        <div class="wheel" id="wheel">
+            <div class="center">🍕</div>
+        </div>
+        
+        <div class="info">
+            <strong>Попыток:</strong> <span id="tries">3</span>
+        </div>
+        
+        <div class="result" id="result"></div>
+        
+        <button id="spinBtn" onclick="spinWheel()">🎯 КРУТИТЬ!</button>
+    </div>
+
+    <script>
+        let spins = 3;
+        
+        const prizes = [
+            "🍕 ПИЦЦА",
+            "💰 300 РУБ",
+            "💰 200 РУБ",
+            "💰 100 РУБ",
+            "🎁 БОНУС"
+        ];
+        
+        function spinWheel() {
+            if (spins <= 0) {
+                alert("❌ Попытки закончились!");
+                return;
+            }
+            
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
+            
+            spins--;
+            document.getElementById('tries').textContent = spins;
+            
+            const wheel = document.getElementById('wheel');
+            const prizeIndex = Math.floor(Math.random() * prizes.length);
+            const angle = Math.random() * 360 + prizeIndex * 72;
+            
+            wheel.style.transform = `rotate(${angle + 1800}deg)`;
+            
+            setTimeout(() => {
+                const result = document.getElementById('result');
+                result.textContent = prizes[prizeIndex];
+                result.classList.add('show');
+                btn.disabled = false;
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
